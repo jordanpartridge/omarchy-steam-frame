@@ -11,6 +11,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          # Trufflehog scans .git/config. The checkout token is not a repo
+          # secret; do not leave it in that file for the scan to flag.
+          persist-credentials: false
 
       - uses: actions/setup-python@v5
         with:
