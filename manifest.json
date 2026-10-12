@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "jordan.steam-frame",
+  "name": "Steam Frame",
+  "version": "1.0.0",
+  "author": "Jordan Partridge",
+  "license": "MIT",
+  "description": "Bar readout of Steam Frame radio versus picture, charge, SteamVR, and where audio is playing. Hide or show the SteamVR status window.",
+  "kinds": ["bar-widget"],
+  "entryPoints": {
+    "barWidget": "Panel.qml"
+  },
+  "barWidget": {
+    "displayName": "Steam Frame",
+    "description": "Charge, SteamVR, radio versus picture, and audio. Click to read. Refresh does not restart Steam.",
+    "category": "System",
+    "aliases": ["frame", "steamvr", "vr"],
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}
