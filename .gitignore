@@ -1,0 +1,19 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.log
+.DS_Store
+
+# Filled-in desk settings. Copy config.example.json outside the repository.
+config.json

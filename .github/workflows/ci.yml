@@ -1,0 +1,57 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Python syntax and lint
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install ruff
+          python3 -m compileall -q bin tests scripts
+          ruff check bin tests scripts
+
+      - name: Unit tests
+        run: python3 -I -m unittest discover -s tests -v
+
+      - name: Manifest
+        run: python3 -I scripts/validate_manifest.py
+
+      - name: Shellcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+          shellcheck scripts/*.sh
+
+      - name: Scrub check
+        run: python3 -I scripts/scrub_check.py
+
+      - name: Gitleaks
+        run: |
+          version=8.30.1
+          curl -fsSL -o /tmp/gitleaks.tar.gz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${version}/gitleaks_${version}_linux_x64.tar.gz"
+          tar -xzf /tmp/gitleaks.tar.gz -C /tmp gitleaks
+          sudo install -m 0755 /tmp/gitleaks /usr/local/bin/gitleaks
+          gitleaks detect --source . --verbose --redact --no-banner
+
+      - name: Trufflehog
+        run: |
+          version=3.99.2
+          curl -fsSL -o /tmp/trufflehog.tar.gz \
+            "https://github.com/trufflesecurity/trufflehog/releases/download/v${version}/trufflehog_${version}_linux_amd64.tar.gz"
+          tar -xzf /tmp/trufflehog.tar.gz -C /tmp trufflehog
+          sudo install -m 0755 /tmp/trufflehog /usr/local/bin/trufflehog
+          trufflehog filesystem . --no-update --fail --no-verification
